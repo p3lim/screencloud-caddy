@@ -3,6 +3,7 @@ import ScreenCloud
 import pycaddy as caddy
 
 from PythonQt.QtCore import QSettings, QFile, QStandardPaths
+from PythonQt.QtGui import QFileDialog
 from PythonQt.QtUiTools import QUiLoader
 
 class CaddyUpload():
@@ -11,13 +12,7 @@ class CaddyUpload():
 		self.loadSettings()
 
 	def upload(self, screenshot, name):
-		path = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
-		path = os.path.join(path, name)
-
-		try:
-			screenshot.save(QFile(path), ScreenCloud.getScreenshotFormat())
-		except Exception as e:
-			raise
+		path = self.save(screenshot, name)
 
 		if not path:
 			ScreenCloud.setError('Failed to save screenshot')
@@ -37,6 +32,24 @@ class CaddyUpload():
 
 		return True
 
+	def save(self, screenshot, name, path=None):
+		if self.save_file and len(self.save_path) > 0:
+			if os.path.isdir(self.save_path):
+				path = self.save_path
+			# else: # TODO: warn the user that the file could not be saved locally
+
+		if not path:
+			path = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
+
+		path = os.path.join(path, name)
+
+		try:
+			screenshot.save(QFile(path), ScreenCloud.getScreenshotFormat())
+		except Exception as e:
+			raise
+
+		return path
+
 	def getFilename(self):
 		return ScreenCloud.formatFilename(self.name_format)
 
@@ -46,6 +59,8 @@ class CaddyUpload():
 		self.settingsDialog = self.uil.load(QFile(workingDir + '/settings.ui'), parentWidget)
 		self.settingsDialog.group_url.check_auth.connect('stateChanged(int)', self.updateUI)
 		self.settingsDialog.group_screenshot.input_name.connect('textChanged(QString)', self.nameFormatEdited)
+		self.settingsDialog.group_screenshot.check_savefile.connect('stateChanged(int)', self.updateUI)
+		self.settingsDialog.group_screenshot.button_browse.connect('clicked()', self.browseForDirectory)
 		self.settingsDialog.connect('accepted()', self.saveSettings)
 
 		self.loadSettings()
@@ -57,6 +72,8 @@ class CaddyUpload():
 		self.settingsDialog.group_url.check_copylink.checked = self.copy_link
 
 		self.settingsDialog.group_screenshot.input_name.text = self.name_format
+		self.settingsDialog.group_screenshot.check_savefile.checked = self.save_file
+		self.settingsDialog.group_screenshot.input_directory.text = self.save_path
 
 		self.updateUI()
 
@@ -74,6 +91,8 @@ class CaddyUpload():
 		self.copy_link = settings.value('copy-link', 'True') == 'True'
 
 		self.name_format = settings.value('name-format', '%Y-%m-%d_%H-%M-%S')
+		self.save_file = settings.value('save-file', 'False') == 'True'
+		self.save_path = settings.value('save-path', '')
 
 		settings.endGroup()
 		settings.endGroup()
@@ -90,6 +109,8 @@ class CaddyUpload():
 		settings.setValue('copy-link', str(self.settingsDialog.group_url.check_copylink.checked))
 
 		settings.setValue('name-format', self.settingsDialog.group_screenshot.input_name.text)
+		settings.setValue('save-file', str(self.settingsDialog.group_screenshot.check_savefile.checked))
+		settings.setValue('save-path', self.settingsDialog.group_screenshot.input_directory.text)
 
 		settings.endGroup()
 		settings.endGroup()
@@ -104,14 +125,25 @@ class CaddyUpload():
 			else:
 				return True
 
+	def browseForDirectory(self):
+		path = QFileDialog.getExistingDirectory(self.settingsDialog, 'Select location', self.save_path)
+		if path:
+			self.settingsDialog.group_screenshot.input_directory.setText(path)
+			self.saveSettings()
+
 	def nameFormatEdited(self, name_format):
 		self.settingsDialog.group_screenshot.label_example.setText(ScreenCloud.formatFilename(name_format))
 
 	def updateUI(self):
 		auth_enabled = self.settingsDialog.group_url.check_auth.checked
+		save_file = self.settingsDialog.group_screenshot.check_savefile.checked
 
 		self.settingsDialog.group_url.label_key.setVisible(auth_enabled)
 		self.settingsDialog.group_url.input_key.setVisible(auth_enabled)
 
 		self.settingsDialog.group_url.label_secret.setVisible(auth_enabled)
 		self.settingsDialog.group_url.input_secret.setVisible(auth_enabled)
+
+		self.settingsDialog.group_screenshot.label_directory.setVisible(save_file)
+		self.settingsDialog.group_screenshot.input_directory.setVisible(save_file)
+		self.settingsDialog.group_screenshot.button_browse.setVisible(save_file)
