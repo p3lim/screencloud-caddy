@@ -10,7 +10,7 @@ and has a few other options up its sleeve.
 
 Preferences -> Online Services -> More services -> Install from URL:
 
-- <https://github.com/p3lim/screencloud-caddy/archive/master.zip>
+- <https://github.com/p3lim/screencloud-caddy/releases/download/1.0/packaged.zip>
 
 ### Settings
 
