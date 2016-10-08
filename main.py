@@ -1,6 +1,8 @@
+import os
 import ScreenCloud
+import pycaddy as caddy
 
-from PythonQt.QtCore import QSettings
+from PythonQt.QtCore import QSettings, QFile, QStandardPaths
 from PythonQt.QtUiTools import QUiLoader
 
 class CaddyUpload():
@@ -9,10 +11,28 @@ class CaddyUpload():
 		self.loadSettings()
 
 	def upload(self, screenshot, name):
+		path = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
+		path = os.path.join(path, name)
+
+		try:
+			screenshot.save(QFile(path), ScreenCloud.getScreenshotFormat())
+		except Exception as e:
+			raise
+
+		if not path:
+			ScreenCloud.setError('Failed to save screenshot')
+			return False
+
+		try:
+			url = caddy.upload(self.url_address, path)
+		except Exception as e:
+			ScreenCloud.setError('\n' + str(e))
+			return False
+
 		return True
 
 	def getFilename(self):
-		return ScreenCloud.formatFilename('temp')
+		return ScreenCloud.formatFilename(self.name_format)
 
 	def showSettingsUI(self, parentWidget):
 		self.parentWidget = parentWidget
