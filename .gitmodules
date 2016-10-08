@@ -1,0 +1,6 @@
+[submodule "dist/requests"]
+	path = dist/requests
+	url = git://github.com/kennethreitz/requests
+[submodule "dist/pycaddy"]
+	path = dist/pycaddy
+	url = git://github.com/p3lim/pycaddy
