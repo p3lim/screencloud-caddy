@@ -29,6 +29,9 @@ class CaddyUpload():
 			ScreenCloud.setError('\n' + str(e))
 			return False
 
+		if self.copy_link:
+			ScreenCloud.setUrl(url)
+
 		return True
 
 	def getFilename(self):
@@ -44,7 +47,10 @@ class CaddyUpload():
 		self.loadSettings()
 
 		self.settingsDialog.group_url.input_url.text = self.url_address
+		self.settingsDialog.group_url.check_copylink.checked = self.copy_link
 		self.settingsDialog.group_screenshot.input_name.text = self.name_format
+
+		self.updateUI()
 
 		self.settingsDialog.open()
 
@@ -54,6 +60,7 @@ class CaddyUpload():
 		settings.beginGroup('caddy')
 
 		self.url_address = settings.value('url-address', '')
+		self.copy_link = settings.value('copy-link', 'True') == 'True'
 		self.name_format = settings.value('name-format', '%Y-%m-%d_%H-%M-%S')
 
 		settings.endGroup()
@@ -65,6 +72,7 @@ class CaddyUpload():
 		settings.beginGroup('caddy')
 
 		settings.setValue('url-address', self.settingsDialog.group_url.input_url.text)
+		settings.setValue('copy-link', str(self.settingsDialog.group_url.check_copylink.checked))
 		settings.setValue('name-format', self.settingsDialog.group_screenshot.input_name.text)
 
 		settings.endGroup()

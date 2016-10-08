@@ -68,6 +68,17 @@
 								</item>
 							</layout>
 						</item>
+						<item>
+							<layout class="QVBoxLayout" name="verticalLayout">
+								<item>
+									<widget class="QCheckBox" name="check_copylink">
+										<property name="text">
+											<string>Copy image link to clipboard</string>
+										</property>
+									</widget>
+								</item>
+							</layout>
+						</item>
 					</layout>
 				</widget>
 			</item>
@@ -137,6 +148,7 @@
 	</widget>
 	<tabstops>
 		<tabstop>input_url</tabstop>
+		<tabstop>check_copylink</tabstop>
 		<tabstop>input_name</tabstop>
 	</tabstops>
 	<resources/>
