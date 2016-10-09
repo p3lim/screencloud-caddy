@@ -3,7 +3,7 @@
 This is a plugin that allow you to use [ScreenCloud](https://screencloud.net/) to upload directly to any  
 website running [Caddy](https://caddyserver.com/) with the [upload extension](https://caddyserver.com/docs/upload).
 
-It supports "Signature" (HMAC-SHA256) authorization (optional but recommended),  
+It supports "Signature" (HMAC-SHA256) authentication (optional but recommended),  
 and has a few other options up its sleeve.
 
 ### Installation
