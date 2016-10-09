@@ -26,7 +26,7 @@ example.com {
 	browse /
 	upload / {
 		to "/var/www"
-		hmac_keys_in john=c25vdw==
+		hmac_keys_in john=c25vdw== # base64 encoded secret
 	}
 }
 
