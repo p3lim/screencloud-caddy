@@ -1,1 +1,0 @@
-../dist/pycaddy/pycaddy.py
