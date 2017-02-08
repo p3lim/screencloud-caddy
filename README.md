@@ -14,7 +14,7 @@ Preferences -> Online Services -> More services -> Install from URL:
 
 ### Settings
 
-![](https://cloud.githubusercontent.com/assets/26496/19211114/4be5cb94-8d35-11e6-8796-66b80044b834.png)
+![](https://cloud.githubusercontent.com/assets/26496/22751861/7be1912c-ee36-11e6-8b1c-3dd3803d08dd.png)
 
 
 ### Caddy configuration example
@@ -26,7 +26,7 @@ example.com {
 	browse /
 	upload / {
 		to "/var/www"
-		hmac_keys_in john=c25vdw== # base64 encoded secret
+		hmac_keys_in jon=c25vdw== # base64 encoded secret
 	}
 }
 
