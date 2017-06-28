@@ -1,7 +1,7 @@
 <metadata>
 	<name>Caddy Upload</name>
 	<shortname>caddy</shortname>
-	<version>1.0</version>
+	<version>1.0.3</version>
 	<className>CaddyUpload</className>
 	<icon>icon.png</icon>
 </metadata>

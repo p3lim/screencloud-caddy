@@ -6,6 +6,13 @@ from PythonQt.QtCore import QSettings, QFile, QStandardPaths
 from PythonQt.QtGui import QFileDialog
 from PythonQt.QtUiTools import QUiLoader
 
+import re
+def fix_filename(name):
+	# temp fix until 1.3.1 gets released
+	pattern = re.compile("^b'(.*)'(\.%s)$" % ScreenCloud.getScreenshotFormat())
+	match = pattern.match(name)
+	return match and ''.join(match.groups()) or name
+
 class CaddyUpload():
 	def __init__(self):
 		self.uil = QUiLoader()
@@ -51,7 +58,7 @@ class CaddyUpload():
 		return path
 
 	def getFilename(self):
-		return ScreenCloud.formatFilename(self.name_format)
+		return fix_filename(ScreenCloud.formatFilename(self.name_format))
 
 	def showSettingsUI(self, parentWidget):
 		self.parentWidget = parentWidget
@@ -132,7 +139,7 @@ class CaddyUpload():
 			self.saveSettings()
 
 	def nameFormatEdited(self, name_format):
-		self.settingsDialog.group_screenshot.label_example.setText(ScreenCloud.formatFilename(name_format))
+		self.settingsDialog.group_screenshot.label_example.setText(fix_filename(ScreenCloud.formatFilename(name_format)))
 
 	def updateUI(self):
 		auth_enabled = self.settingsDialog.group_url.check_auth.checked
